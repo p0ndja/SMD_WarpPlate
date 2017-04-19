@@ -1,0 +1,7 @@
+name: SMDWarpPlate
+main: me.palapon2545.warpplate.pluginMain
+version: BETA
+description:
+commands:
+  smdwarpplate:
+    description: SMDWarpPlate's How to use.
