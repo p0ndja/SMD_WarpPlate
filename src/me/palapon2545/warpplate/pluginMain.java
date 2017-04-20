@@ -131,14 +131,14 @@ public class pluginMain extends JavaPlugin implements Listener {
 				Sign sign = (Sign) block2.getState();
 				if (sign.getLine(0).equalsIgnoreCase("[tp]")) {
 
-					int xh = Integer.parseInt(sign.getLine(1));
-					int yh = Integer.parseInt(sign.getLine(2));
-					int zh = Integer.parseInt(sign.getLine(3));
+					double xh = Integer.parseInt(sign.getLine(1));
+					double yh = Integer.parseInt(sign.getLine(2));
+					double zh = Integer.parseInt(sign.getLine(3));
 
 					Location loca = player.getLocation();
-					loca.setX(xh);
+					loca.setX(xh + 0.5);
 					loca.setY(yh);
-					loca.setZ(zh);
+					loca.setZ(zh + 0.5);
 
 					player.teleport(loca);
 				}
