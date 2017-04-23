@@ -19,6 +19,7 @@ import org.bukkit.potion.PotionEffectType;
 import me.palapon2545.warpplate.pluginMain;
 
 import org.bukkit.Sound;
+import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
@@ -66,17 +67,22 @@ public class pluginMain extends JavaPlugin implements Listener {
 		Player player = (Player) sender;
 		String message = "";
 		String m[] = message.split("\\s+");
-		if (CommandLabel.equalsIgnoreCase("smdwarpplate") || CommandLabel.equalsIgnoreCase("smdwarpplate:smdwarpplate")) {
+		if (CommandLabel.equalsIgnoreCase("smdwarpplate")
+				|| CommandLabel.equalsIgnoreCase("smdwarpplate:smdwarpplate")) {
 			player.sendMessage("=========§e§l[§f§lHow to use§e§l]§r=========");
 			player.sendMessage("You need to §e§lplace §rthe §d§lsign.");
 			player.sendMessage("If start first line with §b§l[tp] §rLine §d§l2 , 3 , 4 §ris §a§lX , Y , Z §rin order.");
-			player.sendMessage("If start first line with §b§l[cmd] §rLine §d§l2 , 3 ,4 §ris §a§lcommand. §r[it will stick line together, space have effect]");
+			player.sendMessage(
+					"If start first line with §b§l[cmd] §rLine §d§l2 , 3 ,4 §ris §a§lcommand. §r[it will stick line together, space have effect]");
 			player.sendMessage("You need to place §c§lone block §ron them.");
-			player.sendMessage("Then, place §6§lGOLDEN_PLATE §e§o(Weighted Pressure Plate (Light)) §ron block on them.");
-			
+			player.sendMessage(
+					"Then, place §6§lGOLDEN_PLATE §e§o(Weighted Pressure Plate (Light)) §ron block on them.");
+			player.sendMessage("Use §e%p §rwill replace to §eplayer that using name");
+
 		}
 		return true;
 	}
+
 	@EventHandler
 	public void chackbeforewarp(PlayerMoveEvent event) {
 		Player player = event.getPlayer();
@@ -89,29 +95,12 @@ public class pluginMain extends JavaPlugin implements Listener {
 			Block block2 = loc2.getBlock();
 			if ((block2.getType() == Material.SIGN_POST) || (block2.getType() == Material.WALL_SIGN)) {
 				Sign sign = (Sign) block2.getState();
-				if (sign.getLine(0).equalsIgnoreCase("[tp]")) {
+				if (sign.getLine(0).equalsIgnoreCase("[tp]") || sign.getLine(0).equalsIgnoreCase("[cmd]")
+						|| sign.getLine(0).equalsIgnoreCase("[server]") || sign.getLine(0).equalsIgnoreCase("[world]")) {
 					player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 100, 10));
-					ActionBar action = new ActionBar(ChatColor.YELLOW + "" + ChatColor.BOLD + "Hold" + ChatColor.GREEN
-							+ "" + ChatColor.BOLD + " >>Shift<< " + ChatColor.AQUA + "To Teleport");
+					ActionBar action = new ActionBar(ChatColor.YELLOW + "" + ChatColor.BOLD + "Hold " + ChatColor.GREEN
+							+ ChatColor.BOLD + ChatColor.UNDERLINE + "Shift" + ChatColor.AQUA + " to use.");
 					action.sendToPlayer(player);
-					// player.sendMessage(ChatColor.YELLOW+""+ChatColor.BOLD+"Hold"+ChatColor.GREEN+""+ChatColor.BOLD+"
-					// >>Shift<< "+ChatColor.AQUA+"To Teleport");
-				}
-			}
-		}
-		if (block.getType() == Material.GOLD_PLATE) {
-			Location loc2 = player.getLocation();
-			loc2.setY(loc.getY() - 2);
-			Block block2 = loc2.getBlock();
-			if ((block2.getType() == Material.SIGN_POST) || (block2.getType() == Material.WALL_SIGN)) {
-				Sign sign = (Sign) block2.getState();
-				if (sign.getLine(0).equalsIgnoreCase("[cmd]")) {
-					player.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 100, 10));
-					ActionBar action = new ActionBar(ChatColor.YELLOW + "" + ChatColor.BOLD + "Hold" + ChatColor.GREEN
-							+ "" + ChatColor.BOLD + " >>Shift<< " + ChatColor.AQUA + "To Teleport");
-					action.sendToPlayer(player);
-					// player.sendMessage(ChatColor.YELLOW+""+ChatColor.BOLD+"Hold"+ChatColor.GREEN+""+ChatColor.BOLD+"
-					// >>Shift<< "+ChatColor.AQUA+"To Teleport");
 				}
 			}
 		}
@@ -120,36 +109,70 @@ public class pluginMain extends JavaPlugin implements Listener {
 	@EventHandler
 	public void warping(PlayerToggleSneakEvent event) {
 		Player player = event.getPlayer();
+		String playerName = player.getName();
 		Location loc = player.getLocation();
 		loc.setY(loc.getY());
 		Block block = loc.getBlock();
-		if (block.getType() == Material.GOLD_PLATE) {
-			Location loc2 = player.getLocation();
-			loc2.setY(loc.getY() - 2);
-			Block block2 = loc2.getBlock();
-			if ((block2.getType() == Material.SIGN_POST) || (block2.getType() == Material.WALL_SIGN)) {
-				Sign sign = (Sign) block2.getState();
-				if (sign.getLine(0).equalsIgnoreCase("[tp]")) {
+		if (event.isSneaking() == true) {
+			if (block.getType() == Material.GOLD_PLATE) {
+				Location loc2 = player.getLocation();
+				loc2.setY(loc.getY() - 2);
+				Block block2 = loc2.getBlock();
+				if ((block2.getType() == Material.SIGN_POST) || (block2.getType() == Material.WALL_SIGN)) {
+					Sign sign = (Sign) block2.getState();
+					if (sign.getLine(0).equalsIgnoreCase("[tp]")) {
 
-					double xh = Integer.parseInt(sign.getLine(1));
-					double yh = Integer.parseInt(sign.getLine(2));
-					double zh = Integer.parseInt(sign.getLine(3));
+						double xh = Integer.parseInt(sign.getLine(1));
+						double yh = Integer.parseInt(sign.getLine(2));
+						double zh = Integer.parseInt(sign.getLine(3));
 
-					Location loca = player.getLocation();
-					loca.setX(xh + 0.5);
-					loca.setY(yh);
-					loca.setZ(zh + 0.5);
+						Location loca = player.getLocation();
+						loca.setX(xh + 0.5);
+						loca.setY(yh);
+						loca.setZ(zh + 0.5);
 
-					player.teleport(loca);
+						player.teleport(loca);
+					}
+				}
+				if ((block2.getType() == Material.SIGN_POST) || (block2.getType() == Material.WALL_SIGN)) {
+					Sign sign = (Sign) block2.getState();
+					if (sign.getLine(0).equalsIgnoreCase("[cmd]")) {
+						String cmd = sign.getLine(1) + sign.getLine(2) + sign.getLine(3);
+						String cmdreplaceplayer = cmd.replaceAll("%p", playerName);
+						player.performCommand(cmdreplaceplayer);
+					}
+				}
+				if ((block2.getType() == Material.SIGN_POST) || (block2.getType() == Material.WALL_SIGN)) {
+					Sign sign = (Sign) block2.getState();
+					if (sign.getLine(0).equalsIgnoreCase("[server]")) {
+						String cmd = sign.getLine(1) + sign.getLine(2) + sign.getLine(3);
+						String cmdreplaceplayer = cmd.replaceAll("%p", playerName);
+						Bukkit.dispatchCommand(Bukkit.getConsoleSender(), cmdreplaceplayer);
+					}
+				}
+				if ((block2.getType() == Material.SIGN_POST) || (block2.getType() == Material.WALL_SIGN)) {
+					Sign sign = (Sign) block2.getState();
+					if (sign.getLine(0).equalsIgnoreCase("[world]")) {
+						World world = Bukkit.getWorld(sign.getLine(1) + sign.getLine(2) + sign.getLine(3));
+						if (world != null) {
+						double x = player.getLocation().getX();
+						double y = player.getLocation().getY();
+						double z = player.getLocation().getZ();
+						double pitch = player.getLocation().getPitch();
+						double yaw = player.getLocation().getYaw();
+						Location loc1 = new Location(world, x, y, z);
+						loc1.setPitch((float) pitch);
+						loc1.setYaw((float) yaw);
+						player.teleport(loc1);
+						} else {
+							ActionBar action = new ActionBar(ChatColor.RED + "World not found, Please contact admin.");
+							action.sendToPlayer(player);
+						}
+					}
 				}
 			}
-			if ((block2.getType() == Material.SIGN_POST) || (block2.getType() == Material.WALL_SIGN)) {
-				Sign sign = (Sign) block2.getState();
-				if (sign.getLine(0).equalsIgnoreCase("[cmd]")) {
-					String cmd = sign.getLine(1) + sign.getLine(2) + sign.getLine(3);
-					player.performCommand(cmd);
-				}
-			}
+		} else {
+			return;
 		}
 	}
 
